@@ -1,0 +1,599 @@
+<!doctype html>  
+<html lang="en">
+  <head>
+    <title>Developing web applications using Nancy</title>
+    
+	<meta charset="utf-8">
+	<meta name="author" content="Andreas H&aring;kansson">
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/print.css" media="print">
+    <link rel="stylesheet" href="css/monokai.css">
+	
+    <style type="text/css">
+
+		body {
+			zoom: 0.9;
+			font-family: 'Lucida Grande', 'Helvetica Neue', sans-serif !important;
+		}
+		
+		pre {
+			font-size:0.7em !important;
+		}
+		
+		h1, h2, h3, h4, h5, h6
+		{
+			text-transform:none !important;
+		}
+		
+		h1, h2
+		{
+			line-height: 1.2em !important;
+		}
+				
+		em {
+			color: #d0ff00;
+			font-weight: bold;
+			font-style: normal !important;
+		}
+		
+		.authors {
+			background: #272822 !important;
+			box-shadow: 0px 0px 6px rgba(0,0,0,0.3);
+			margin-top: 0.5em;
+			padding: 0.3em;
+		}
+				
+		h3 {
+			font-weight:normal;
+		}
+		
+		dl {
+			margin-top:1em;
+			text-align:left;
+			overflow: hidden;
+		}
+		
+		dt img {
+			float:right;
+		}
+	  
+		dd {
+			margin-bottom:1em; 
+		}
+		
+		#reveal section .logo {
+			background-color: transparent;
+			border: 0;
+			margin: 0;
+			padding: 0;
+			width: 50%;
+			webkit-box-shadow: none !important;
+			-moz-box-shadow: none !important;
+			-o-box-shadow: none !important;
+			box-shadow: none !important;
+		}
+		
+		img {max-width:95%;}
+		
+		@media all and (max-width:1024px) {
+			pre {font-size:0.6em !important;}
+			ul {max-width:80%;}
+		}
+    </style>
+  </head>
+  <body>
+    <div id="reveal">
+      <div class="slides">
+
+      	<section>
+      		<img src="img/nancy-vertical-wf-tb.png" alt="Nancy logo" class="logo" />
+      	</section>
+
+        <section>
+			<h1>Developing web applications using Nancy</h1>
+        </section>
+        
+		<section>
+			<section>
+				<h1>What is Nancy?</h1>
+			</section>
+			<section>
+				<h2>Nancy is a <em>lightweight</em>, <em>low-ceremony</em>, framework for building <em>HTTP</em> based services</h2>
+			</section>
+			<section>
+				<h2>The goal of the framework is to <em>stay out of the way</em> as much as possible and provide a <em>super-duper-happy-path</em> to all interactions</h2>
+			</section>
+			<section>
+				<h2><em>Open source</em>, built on the <em>most liberal</em> software license around; <em>MIT</em></h2>
+			</section>
+			<section>
+				<h2>Built by the <em>community</em>, for the <em>community</em>!</h2>
+			</section>
+        </section>
+		
+		<section>
+			<section>
+				<h1>What makes Nancy different?</h1>
+			</section>
+			<section>
+				<h2><em>Same</em> goal, <em>different</em> approaches</h2>
+				<div>
+					There are several frameworks availble for building HTTP based services, such as <em>FubuMVC</em>, <em>OpenRasta</em> and the <em>ASP.NET stack</em>
+				</div>
+			</section>
+			<section>
+				<h2>But...</h2>
+				<div>I wouldn't be here if I didn't think Nancy has something <em>unique</em> to bring to the game!</div>
+			</section>
+		</section>
+		
+		<section>
+			<section>
+				<h1>Syntax, more to it than meets the eye</h1>
+			</section>
+			<section>
+				<h2>We put a lot of <em>effort</em> into creating a <em>great</em> API</h2>
+				<pre><code class="c#">
+public class Home : NancyModule
+{
+	public Home(IItemRepository repository)
+	{
+		Get["/"] = parameters => {
+			return View["index"];
+		};
+
+		Get["/item/{slug}"] = parameters => {
+			var item = repository.Get(parameters.slug);
+			return Response.AsJson(item);
+		};
+	}
+}
+				</code></pre>
+			</section>
+			<section>
+				<h2>Code is structured in <em>modules</em></h2>
+				<pre><code class="c#">
+public class Home : NancyModule
+{
+	public Home()
+	{
+	}
+}
+				</code></pre>
+				<div>You can have as many modules as you like, they will help structure your code</div>
+			</section>
+			<section>
+				<h2><em>Explicit</em> declaration of resource </em>access</em></h2>
+				<pre><code class="c#">
+Get["/"] = parameters => {
+...
+};
+
+Delete["/"] = parameters => {
+...
+};
+
+Put["/"] = parameters => {
+...
+};
+				</code></pre>
+				<div>Nancy is designed to handle <em>DELETE</em>, <em>GET</em>, <em>HEAD</em>, <em>OPTIONS</em>, <em>POST</em>, <em>PUT</em> and <em>PATCH</em> requests</div>
+			</section>
+			<section>
+				<h2>Dynamics is a <em>star</em></h2>
+				<pre><code class="c#">
+Get["/article/{id}"] = parameters => {
+
+	// Captures route parameters
+	var parameterId = parameters.id;
+
+	// Includes query string values
+	var queryId = Request.Query.id;
+
+	// Posted form values
+	var formId = Request.Form.id;
+};
+				</code></pre>
+			</section>
+			<section>
+				<h2>Implicit casting keeps the code <em>clean</em></h2>
+				<pre><code class="c#">
+Get["/"] = parameters => {
+	return new Response();
+};
+
+Get["/"] = parameters => {
+	return "Hello";
+};
+
+Get["/"] = parameters => {
+	return 418;
+};
+
+Get["/"] = parameters => {
+	return HttpStatusCode.ImATeapot;
+};
+				</code></pre>
+			</section>
+			<section>
+				<h2>Nifty <em>helpers</em> for creating responses</h2>
+				<pre><code class="c#">
+Get["/"] = parameters => {
+	return Response.AsJson(....);
+};
+
+Get["/"] = parameters => {
+	return Response.AsStream(....);
+};
+
+Get["/"] = parameters => {
+	return Response.AsFile(....);
+};
+				</code></pre>
+				<div>There are <em>a lot more</em>, and like everything else in Nancy, it's <em>completely extensible</em>. Go nuts!</div>
+			</section>
+			<section>
+				<h2>And so on, and so on, and so on....</h2>
+				<div>...and on and on and on...</div>
+			</section>
+        </section>
+		
+		<section>
+			<section>
+				<h1>Tiny, yet very extensible, core</h1>
+			</section>
+			<section>
+				<h2>Lightweight is <em>more</em> than a just a buzzword</h2>
+			</section>
+			<section>
+				<h2>Embracing <em>Nuget</em> as an <em>extensibility</em> mechanism</h2>
+				<pre><code>
+PM&gt; install-package Nancy.*
+				</code></pre>
+				<div><em>30</em> Nancy packages are available today - created by both the team and the <em>community</em>!</div>
+			</section>
+		</section>
+		
+		<section>
+			<section>
+				<h1>Hosting never was easier</h1>
+			</section>
+			<section>
+				<h2>Runs on both <em>.NET</em> and <em>Mono</em></h2>
+				<div>Harness the powers of <em>Windows</em>, <em>Linux</em> and <em>OSX</em>!</div>
+			</section>
+			<section>
+				<h2>Built to run <em>anywhere</em>!</h2>
+				<div>Several hosting options <em>out of the box</em></div>
+				<pre><code>
+PM&gt; install-package Nancy.Hosting.Aspnet
+PM&gt; install-package Nancy.Hosting.OWIN
+PM&gt; install-package Nancy.Hosting.Self
+PM&gt; install-package Nancy.Hosting.WCF
+				</code></pre>
+				<div>Creating a new host all comes down to <em>mapping</em> between <em>requests</em> and <em>responses</em></div>
+			</section>
+		</section>
+
+		<section>
+			<section>
+				<h1>Conventions over Configuration</h1>
+			</section>
+			<section>
+				<h2>It is really all about doing <em>more</em> with <em>less code</em></h2>
+			</section>
+			<section>
+				<h2>View location conventions</h2>
+				<div>When you <em>render a view</em>, Nancy will use <em>conventions</em> to figure out which view you are rendering</div>
+				<pre><code class="c#">
+(viewName, model, context) => {
+    return string.Concat("views/", viewName);
+}
+
+(viewName, model, context) => {
+    return string.Concat("views/",
+		context.ModuleName, "/", viewName);
+}
+				</code></pre>
+				<div>It's really just a function with the following signature</div>
+				<pre><code class="c#">
+Func&lt;string, dynamic, ViewLocationContext, string&gt;
+				</code></pre>
+			</section>
+			<section>
+				<h2>Static content conventions</h2>
+				<div>Structuring static content in an application is almost a religious thing for developers</div>
+				<pre><code class="c#">
+(context, applicationRootPath) => {
+	// Inspect the incoming request and determin if a
+	// file should be returned or if Nancy should
+	// continue processing the request
+}
+				</code></pre>
+				<div>It's really just a function with the following signature</div>
+				<pre><code class="c#">
+Func&lt;NancyContext, string, Response&gt;
+				</code></pre>
+				<div>Write your own, or use the <em>built in helpers</em> to create <em>powerful conventions</em> with hardly any code</div>
+			</section>
+		</section>
+		
+		<section>
+			<section>
+				<h1>Dependency Injection</h1>
+			</section>
+			<section>
+				<h2>It's <em>part of the experience</em>, not an extension</h2>
+			</section>
+			<section>
+				<h2>The bootstrapper <em>composes</em> Nancy at <em>runtime</em></h2>
+				<div>At the heart there is a <em>bootstrapper</em>, which is much like a magical unicorn</div>
+			</section>
+			<section>
+				<h2>Magic resolution of Module dependencies</h2>
+				<pre><code class="c#">
+public class Home : NancyModule
+{
+	public Home(IDependency dependency)
+	{
+		// The dependency will automatically be resolved at run-time
+	}
+}
+				</code></pre>
+			</section>
+			<section>
+				<h2>Supports <em>all</em> the major containers</h2>
+				<div><em>Literally</em>, as easy as installing a Nuget</div>
+				<pre><code>
+PM&gt; install-package Nancy.Bootstrapper.Autofac
+PM&gt; install-package Nancy.Bootstrapper.Ninject
+PM&gt; install-package Nancy.Bootstrapper.StructureMap
+PM&gt; install-package Nancy.Bootstrapper.Unity
+PM&gt; install-package Nancy.Bootstrapper.Windsor
+				</code></pre>
+				<div>It's <em>no container abstraction</em>, you get access to the <em>full</em> API of each container</div>
+			</section>
+		</section>
+		
+		<section>
+			<section>
+				<h1>Pipelines makes extensibility a breeze</h1>
+			</section>
+			<section>
+				<h2><em>Application-level pipeline</em> for cross-cutting concerns</em></h2>
+				<div>
+					We make <em>heavy</em> us of the application pipeline to add functionality to Nancy. Things like
+					<em>caching</em>, <em>static content</em>, <em>security</em> and <em>throttling</em> are easy to
+					hook up using the pipeline
+				</div>
+			</section>
+			<section>
+				<h2><em>Module-level pipelines</em> for narrower concerns</em></h2>
+				<div>You get the opportunity to run code, on a module level, both <em>before</em> and <em>after</em> a route is invoked</div>
+				<pre><code class="c#">
+Before += (context) => {
+	// Short-circut the Request by returning a Response or
+	// null to continue processing the request in the Module
+}
+				</pre></code>
+				<pre><code class="c#">
+After += (context) => {
+	// Gives you the opportunity to modify a Response before it
+	// is returned to the client
+}
+				</pre></code>
+			</section>
+		</section>
+
+		<section>
+			<section>
+				<h1>View engines</h1>
+			</section>
+			<section>
+				<h2>There is a flavour for <em>everyone</em>!</h2>
+				<div>Comes with a built in engine called <em>SuperSimpleViewEngine</em>, but of course there is more...</div>
+				<pre><code>
+PM&gt; install-package Nancy.ViewEngines.DotLiquid
+PM&gt; install-package Nancy.ViewEngines.NDjango
+PM&gt; install-package Nancy.ViewEngines.NHaml
+PM&gt; install-package Nancy.ViewEngines.Nustache
+PM&gt; install-package Nancy.ViewEngines.Spark
+PM&gt; install-package Nancy.ViewEngines.Razor
+				</code></pre>
+				<div>
+					As with everything else in Nancy, just install a Nuget and Nancy will <em>automatically</em> wire it up for you.
+					If you are looking for WebForms...yeah.. just <em>don't</em>, ok?
+				</div>
+			</section>
+			<section>
+				<h2>Rendering a view <em>couldn't be easier</em></h2>
+				<pre><code class="#c">
+public class Home : NancyModule
+{
+	public Home()
+	{
+		Get["/"] = parameters => {
+			return View["index"];
+		};
+	}
+}
+				</code></pre>
+				<div>
+					View locations are <em>convention based</em> and there are several default conventions defined. It is <em>easy</em> to
+					configure <em>your own</em>!
+				</div>
+			</section>
+		</section>
+		
+		<section>
+			<section>
+				<h1>Testing</h1>
+			</section>
+			<section>
+				<h2>Testing should be <em>easy</em></h2>
+				<div>The moment testing becomes a tedious chore, you are more likely to start convincing yourself you'll do it later. <em>You won't</em>.</div>
+			</section>
+			<section>
+				<h2>Test helpers</h2>
+				<div>We've built a <em>lightweight</em> framework for testing Nancy applications</em></div>
+				<pre><code>
+PM&gt; install-package Nancy.Testing
+				</code></pre>
+				<div><em>Of course</em> it's a Nuget, what did you think?</div>
+			</section>
+			<section>
+				<h2>Testing</h2>
+				<div>Enough talk! Show me the <em>codez</em>!</div>
+				<pre><code class="c#">public void Should_test_something()
+{
+	// Given
+	var bootstrapper = new ConfigurableBootstrapper(with => {
+		with.Module&lt;Home&gt;();
+	});
+	
+	var browser = new Browser(bootstrapper);
+	
+	// When
+	var result = browser.Get("/", with => {
+		with.HttpRequest();
+		with.FormValue("name", "Nancy");
+	});
+	
+	// Then
+	Assert.Equal(result.StatusCode, HttpStatusCode.Ok);
+}				</code></pre>
+			</section>
+			<section>
+				<h2>Powerful result object</h2>
+				<div>Making sure the right stuff is happening, <em>easy</em></div>
+				<pre><code class="c#">
+response.Body["#errorBox"]
+		.ShouldExistOnce()
+		.And.ShouldBeOfClass("floatingError")
+		.And.ShouldContain(
+			"invalid",
+			StringComparison.InvariantCultureIgnoreCase);
+				</code></pre>
+				<div>And, of course, it's <em>extensible</em>!</div>
+			</section>
+        </section>
+		
+		<section>
+			<section>
+				<h1>Diagnostics</h1>
+			</section>
+			<section>
+				<h2>Doctor, am I dying?</h2>
+				<div><em>Runtime diagnostics capabilities</em>, built straight into the framework itself</div>
+				<img src="img/diagnostics.png" alt="The diagnostics dashboard" height="65%" />
+			</section>
+			<section>
+				<h2>Request tracing</h2>
+				<div>There's <em>nothing wrong</em> with spying on your request every now and then!</div>
+			</section>
+			<section>
+				<h2>Interactive diagnostics</h2>
+				<div><em>Query</em> your application at <em>runtime</em></div>
+				<pre><code class="c#">
+public class ServerTime : IDiagnosticsProvider
+{
+	public string Name { get { return "ServerTime"; } }
+	
+	public string Description 
+	{
+		get { return "The current server time"; }
+	}
+	
+	public object DiagnosticsObject  { get { return this; } }
+	
+	public DateTime GetCurrentTime()
+	{
+		return DateTime.Now;
+	}
+}
+				</code></pre>
+			</section>
+        </section>
+						
+		<section>
+			<h1>Codez!</h1>
+		</section>
+		
+		<section>
+          <h1>Thank you!</h1>
+          <div>Visit <em>nancyfx.org</em> for the full shizzle - <em>source code</em>, <em>documentation</em>, <em>user group</em> and more!</div>
+		  <div class="authors">
+          <dl>
+            <dt>
+                <img src="img/thecodejunkie.png" alt="thecodejunkie" />
+                <h3>Andreas <em>'thecodejunkie'</em> H&aring;kansson!</h3>
+            </dt>
+            <dd>
+              » TheCodeJunkie on <em>Twitter</em> and <em>GitHub</em>
+            </dd>
+
+            <dt>
+              <img src="img/grumpydev.jpeg" alt="grumpydev" />
+              <h3>Steven <em>'grumpydev'</em> Robbins!</h3>
+            </dt>
+            <dd>
+              » Grumpydev on <em>Twitter</em> and <em>GitHub</em>
+            </dd>
+          </dl>
+		  </div>
+        </section>
+		
+      </div>
+
+      <!-- The navigational controls UI -->
+      <aside class="controls">
+        <a class="left" href="#">&#x25C4;</a>
+        <a class="right" href="#">&#x25BA;</a>
+        <a class="up" href="#">&#x25B2;</a>
+        <a class="down" href="#">&#x25BC;</a>
+      </aside>
+
+      <!-- Displays presentation progress, max value changes via JS to reflect # of slides -->
+      <div class="progress"><span></span></div>
+      
+    </div>
+    
+    <script src="js/reveal.js"></script>
+    <script src="js/highlight.js"></script>
+    <script>
+      // Parse the query string into a key/value object
+      var query = {};
+      location.search.replace( /[A-Z0-9]+?=(\w*)/gi, function(a) {
+        query[ a.split( '=' ).shift() ] = a.split( '=' ).pop();
+      } );
+
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // If true; each slide will be pushed to the browser history
+        history: true,
+
+        // Flags if mouse wheel navigation should be enabled
+        mouseWheel: true,
+
+        // Apply a 3D roll to links on hover
+        rollingLinks: true,
+
+        // UI style
+        theme: query.theme || 'default', // default/neon
+
+        // Transition style
+        transition: query.transition || 'default' // default/cube/page/concave/linear(2d)
+      });
+
+	  hljs.tabReplace = '  ';
+      hljs.initHighlightingOnLoad();
+    </script>
+  </body>
+</html>
