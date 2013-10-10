@@ -1,0 +1,302 @@
+<!doctype html>  
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Guerilla framework design</title>
+
+    <meta name="author" content="Andreas H&aring;kansson">
+    <meta name="description" content="Presentation on framework design">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'> -->
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/custom.css" id="theme">
+    <link rel="stylesheet" href="css/reset.css">
+
+    <!-- 
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/print.css" media="print"> -->
+    <link rel="stylesheet" href="css/monokai.css">
+    <!-- <link rel="stylesheet" href="css/zenburn.css"> -->
+
+    <style type="text/css">
+
+      body {
+  			zoom: 0.9;
+  			font-family: 'Lucida Grande', 'Helvetica Neue', sans-serif !important;
+  		}
+		
+  		pre {
+  			font-size:0.7em !important;
+  		}
+  		
+  		h1, h2, h3, h4, h5, h6
+  		{
+  			zoom: 0.8;
+  			text-transform:none !important;
+  		}
+  		
+  		h1, h2
+  		{
+  			line-height: 1.2em !important;
+  		}
+
+      span.highlight {
+        color: #d0ff00;
+        font-weight: bold;
+      }
+
+      .reveal section img {
+        background-color: transparent;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        webkit-box-shadow: none !important;
+        -moz-box-shadow: none !important;
+        -o-box-shadow: none !important;
+        box-shadow: none !important;
+      }
+      
+      img {max-width:95%;}
+
+      h3 {
+        font-weight:normal;
+      }
+
+      pre {font-size:0.5em !important;}
+		
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+      	<section style="top: 200px;">
+      		<h1>Guerilla Framework Design</h1>
+      		<h2>Andreas H&aring;kansson</h2>
+      	</section>
+
+    		<section>
+    			<section>
+    				<h1>Most know me as</h1>
+    				<p>
+    					<em>@thecodejunkie</em> on Twitter<br/><br/>
+    				</p>
+    				<img src="img/thecodejunkie.jpg" /><br/><br/>
+    				<p>
+              I am a huge Open-Source advocate and I have a slight obsession with framework design. <em>#TrueStory</em>
+    				</p>
+    			</section>
+    			<section style="top: 150px;">
+            <img src="img/nancy2.png" /><br/><br/>
+    			</section>
+    			<section style="top: 200px;">
+    				<img src="img/tretton37.png" />
+    			</section>
+          
+    		</section>
+
+        <section>
+          <section>
+            <h1>Framework design?</h1>
+            <h2>But I am a programmer!</h2>
+          </section>
+          <section>
+            <h2>Zomg!? Wut?</h2>
+            <img src="img/complex-interface.jpg" width="80%" height="80%" /><br/><br/>
+            <p style="font-size: 11px; line-height: 1.2em;">
+              Complex Oxide Molecular Beam Epitaxy--5<br>
+              By Argonne National Laboratory
+            </p>
+          </section>
+        </section>
+
+  		  <section>
+          <section>
+            <h1>Let's set the stage</h1>
+            <pre><code class="c#">Get["/{name}"] = parameters =>
+{
+    if (parameters.name == "Nancy")
+    {
+        return Response.AsJson(new Model() { Name = "Nancy"});
+    }
+
+    if (!Request.Query.Admin.HasValue)
+    {
+        return HttpStatusCode.Forbidden;
+    }
+
+    var model =
+        this.Bind<Model>(x => x.Id);
+
+    return View["index", model];
+}</code></pre>
+          </section>
+        </section>
+
+		    <section>
+  			  <section>
+  				  <h1>Dynamics</h1>
+	  			  <pre><code class="no-highlight">Get["/<span class="highlight">{name}</span>"] = <span class="highlight">parameters</span> =>
+{
+    if (<span class="highlight">parameters.name</span> == "Nancy")
+    {
+        return Response.AsJson(new Model() { Name = "Nancy"});
+    }
+
+    if (!Request.<span class="highlight">Query.Admin</span>.HasValue)
+    {
+        return HttpStatusCode.Forbidden;
+    }
+
+    var model =
+        this.Bind<Model>(x => x.Id);
+
+    return View["index", model];
+}</code></pre>
+        </section>
+  		</section>
+
+  		<section>
+  			<section>
+  				<h1>Implicit casting</h1>
+	  			<pre><code class="no-highlight">Get["/{name}"] = parameters =>
+{
+    if (parameters.name == "Nancy")
+    {
+        <span class="highlight">return Response.AsJson(new Model() { Name = "Nancy"});</span>
+    }
+
+    if (!Request.Query.Admin.HasValue)
+    {
+        <span class="highlight">return HttpStatusCode.Forbidden;</span>
+    }
+
+    var model =
+        this.Bind<Model>(x => x.Id);
+
+    <span class="highlight">return View["index", model];</span>
+}</code></pre>
+  			</section>
+ 
+        <section>
+          <h2>A few more examples</h2>
+          <pre><code class="no-highlight">Get["/"] = parameters =>
+{
+  <span class="highlight">return "Hello World";</span>
+}
+
+Get["/"] = parameters =>
+{
+  <span class="highlight">return 404;</span>
+}</code></pre>
+        </section>
+  		</section>
+
+      <section>
+        <section>
+          <h1>Marker interfaces</h1>
+          <pre><code class="no-highlight">Get["/{name}"] = parameters =>
+{
+    if (parameters.name == "Nancy")
+    {
+        <span class="highlight">return Response.AsJson(new Model() { Name = "Nancy"})</span>;
+    }
+
+    if (!Request.Query.Admin.HasValue)
+    {
+        return HttpStatusCode.Forbidden;
+    }
+
+    var model =
+        this.Bind<Model>(x => x.Id);
+
+    return View["index", model];
+}</code></pre>
+        </section>
+      </section>
+
+  		<section>
+  			<section>
+  				<h1>Assembly scanning</h1>
+  				<pre><code class="c#">public static IEnumerable&lt;T&gt; TypesOf&lt;T&gt;()
+{
+    var domain = AppDomain.CurrentDomain;
+
+    var locatedTypes =
+        from assembly in domain.GetAssemblies()
+        where !assembly.IsDynamic
+        from type in assembly.GetExportedTypes()
+        where typeof (T).IsAssignableFrom(type)
+        where !type.IsAbstract
+        where type.IsPublic
+        select type;
+
+    return locatedTypes;
+}</code></pre>
+  			</section>
+  		</section>
+
+  		<section>
+  			<section>
+	  			<h1>Bootstrapping</h1>
+	  			<br/><br/><p>
+            <i>"What if your framework didn't <em>exist</em> until runtime?"</i>
+          </p>
+  			</section>
+      </section>
+
+  		  <section style="top: 200px;">
+          <h1>Thank you!</h1>
+          <h2>Questions?</h2>
+          <p>
+            You can find the slides + code at github.com/thecodejunkie/presentations
+          </p>
+        </section>
+  		</section>
+
+      </div>
+
+      <!-- The navigational controls UI -->
+      <aside class="controls">
+        <a class="left" href="#">&#x25C4;</a>
+        <a class="right" href="#">&#x25BA;</a>
+        <a class="up" href="#">&#x25B2;</a>
+        <a class="down" href="#">&#x25BC;</a>
+      </aside>
+
+      <!-- Displays presentation progress, max value changes via JS to reflect # of slides -->
+      <div class="progress">
+        <span></span>
+      </div>
+      
+    </div>
+    
+    <script src="js/reveal.min.js"></script>
+    <script src="js/highlight.js"></script>
+    <script>
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        keyboard: true,
+        touch: true,
+        overview: true,
+        center: true,
+        loop: false,
+        rtl: false,
+        autoSlide: 0,
+        mouseWheel: false,
+        transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transitionSpeed: 'default', // default/fast/slow
+        backgroundTransition: 'default' // default/linear/none
+      });
+
+      hljs.tabReplace = '  ';
+      hljs.initHighlightingOnLoad();
+    </script>
+  </body>
+</html>

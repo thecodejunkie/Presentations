@@ -1,0 +1,159 @@
+@font-face {
+	font-family: 'tretton37icons';
+	src:url('fonts/tretton37icons.eot');
+	src:url('fonts/tretton37icons.eot?#iefix') format('embedded-opentype'),
+		url('fonts/tretton37icons.woff') format('woff'),
+		url('fonts/tretton37icons.ttf') format('truetype'),
+		url('fonts/tretton37icons.svg#tretton37icons') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+	font-family: 'tretton37icons';
+	content: attr(data-icon);
+	speak: none;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Use the following CSS code if you want to have a class per icon */
+/*
+Instead of a list of all class selectors,
+you can use the generic selector below, but it's slower:
+[class*="icon-"] {
+*/
+.icon-github, .icon-twitter, .icon-stackoverflow, .icon-ninja, .icon-star, .icon-star-2, .icon-star-3, .icon-fork, .icon-bubble, .icon-bubbles, .icon-bubbles-2, .icon-bubble-2, .icon-bubbles-3, .icon-bubbles-4, .icon-menu, .icon-heart, .icon-heart-2, .icon-heart-broken, .icon-plus, .icon-plus-alt, .icon-minus, .icon-minus-alt, .icon-layers, .icon-filter, .icon-tag, .icon-tags, .icon-chart, .icon-bars, .icon-map-pin-fill, .icon-user, .icon-users, .icon-user-2, .icon-users-2, .icon-food, .icon-mug, .icon-trophy, .icon-arrow-up, .icon-arrow-down, .icon-arrow-left, .icon-arrow-right {
+	font-family: 'tretton37icons' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+.icon-github:before {
+	content: "\67";
+}
+.icon-twitter:before {
+	content: "\74";
+}
+.icon-stackoverflow:before {
+	content: "\73";
+}
+.icon-ninja:before {
+	content: "\6e";
+}
+.icon-star:before {
+	content: "\21";
+}
+.icon-star-2:before {
+	content: "\22";
+}
+.icon-star-3:before {
+	content: "\23";
+}
+.icon-fork:before {
+	content: "\25";
+}
+.icon-bubble:before {
+	content: "\26";
+}
+.icon-bubbles:before {
+	content: "\27";
+}
+.icon-bubbles-2:before {
+	content: "\28";
+}
+.icon-bubble-2:before {
+	content: "\29";
+}
+.icon-bubbles-3:before {
+	content: "\2a";
+}
+.icon-bubbles-4:before {
+	content: "\2b";
+}
+.icon-menu:before {
+	content: "\2d";
+}
+.icon-heart:before {
+	content: "\30";
+}
+.icon-heart-2:before {
+	content: "\31";
+}
+.icon-heart-broken:before {
+	content: "\32";
+}
+.icon-plus:before {
+	content: "\33";
+}
+.icon-plus-alt:before {
+	content: "\34";
+}
+.icon-minus:before {
+	content: "\35";
+}
+.icon-minus-alt:before {
+	content: "\36";
+}
+.icon-layers:before {
+	content: "\37";
+}
+.icon-filter:before {
+	content: "\38";
+}
+.icon-tag:before {
+	content: "\2e";
+}
+.icon-tags:before {
+	content: "\2f";
+}
+.icon-chart:before {
+	content: "\39";
+}
+.icon-bars:before {
+	content: "\3a";
+}
+.icon-map-pin-fill:before {
+	content: "\3b";
+}
+.icon-user:before {
+	content: "\24";
+}
+.icon-users:before {
+	content: "\2c";
+}
+.icon-user-2:before {
+	content: "\3c";
+}
+.icon-users-2:before {
+	content: "\3d";
+}
+.icon-food:before {
+	content: "\3e";
+}
+.icon-mug:before {
+	content: "\3f";
+}
+.icon-trophy:before {
+	content: "\40";
+}
+.icon-arrow-up:before {
+	content: "\41";
+}
+.icon-arrow-down:before {
+	content: "\42";
+}
+.icon-arrow-left:before {
+	content: "\43";
+}
+.icon-arrow-right:before {
+	content: "\44";
+}
